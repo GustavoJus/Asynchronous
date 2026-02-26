@@ -12,7 +12,6 @@ async function fetchPokemon() {
     return;
   }
 
-  // Use cached version if available
   if (cache[input]) {
     displayPokemon(cache[input]);
     return;
@@ -25,7 +24,6 @@ async function fetchPokemon() {
     const data = await response.json();
     cache[input] = data;
     displayPokemon(data);
-
   } catch {
     alert("Pokemon not found!");
   }
@@ -34,20 +32,22 @@ async function fetchPokemon() {
 function displayPokemon(data) {
   currentPokemon = data;
 
-  // Hide default pokeball
+  // Hide pokeball
   document.getElementById("defaultImage").style.display = "none";
 
   // Show pokemon image
   const img = document.getElementById("pokemonImage");
-  img.src = data.sprites.front_default;
+  img.src = data.sprites.front_default || "";
   img.style.display = "block";
 
-  // Load cry
+  // Load cry audio
   const audio = document.getElementById("pokemonAudio");
-  audio.src = data.cries.latest || "";
+  audio.src = (data.cries && (data.cries.latest || data.cries.legacy))
+    ? (data.cries.latest || data.cries.legacy)
+    : "";
 
-  // Load moves (limit to first 20)
-  const moves = data.moves.slice(0, 20);
+  // Load moves into dropdowns (limit to 20 to keep it manageable)
+  const moves = (data.moves || []).slice(0, 20);
 
   for (let i = 1; i <= 4; i++) {
     const select = document.getElementById("move" + i);
@@ -62,29 +62,59 @@ function displayPokemon(data) {
   }
 }
 
+function ensureTeamTableExists() {
+  const teamDiv = document.getElementById("team");
+  let table = document.getElementById("teamTable");
+
+  if (!table) {
+    table = document.createElement("table");
+    table.id = "teamTable";
+    teamDiv.appendChild(table);
+  }
+
+  return table;
+}
+
 function addToTeam() {
   if (!currentPokemon) {
     alert("Find a Pokemon first!");
     return;
   }
 
-  const teamDiv = document.getElementById("team");
+  const table = ensureTeamTableExists();
 
-  const member = document.createElement("div");
-  member.className = "team-member";
+  // Create a new row
+  const row = document.createElement("tr");
 
-  const img = document.createElement("img");
-  img.src = currentPokemon.sprites.front_default;
+  // Left cell: sprite
+  const spriteCell = document.createElement("td");
+  spriteCell.className = "team-sprite";
 
-  const list = document.createElement("ul");
+  const sprite = document.createElement("img");
+  sprite.src = currentPokemon.sprites.front_default || "";
+  sprite.alt = currentPokemon.name;
+
+  spriteCell.appendChild(sprite);
+
+  // Right cell: moves list
+  const movesCell = document.createElement("td");
+  movesCell.className = "team-moves";
+
+  const ul = document.createElement("ul");
 
   for (let i = 1; i <= 4; i++) {
+    const moveValue = document.getElementById("move" + i).value;
     const li = document.createElement("li");
-    li.textContent = document.getElementById("move" + i).value;
-    list.appendChild(li);
+    li.textContent = moveValue;
+    ul.appendChild(li);
   }
 
-  member.appendChild(img);
-  member.appendChild(list);
-  teamDiv.appendChild(member);
+  movesCell.appendChild(ul);
+
+  // Add both cells to row
+  row.appendChild(spriteCell);
+  row.appendChild(movesCell);
+
+  // Add row to table
+  table.appendChild(row);
 }
