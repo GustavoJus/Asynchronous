@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokemon Team Builder</title>
+
+<style>
+  body {
+    background-color: #35cce0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .main-container {
+    background-color: #f4f4f4;
+    border: 8px solid #ff54d4;
+    border-radius: 50px;
+    width: 650px;
+    padding: 40px;
+    text-align: center;
+  }
+
+  input, button, select {
+    padding: 5px;
+    margin: 5px;
+  }
+
+  #pokemonImage, #defaultImage {
+    height: 260px;
+    display: block;
+    margin: 20px auto;
+  }
+
+  #pokemonImage {
+    display: none;
+  }
+
+  select {
+    width: 45%;
+  }
+
+  #team {
+    margin-top: 30px;
+  }
+
+  .team-member {
+    margin-top: 20px;
+  }
+
+  .team-member img {
+    height: 100px;
+  }
+
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+  <h2>Name or ID</h2>
+
+  <input type="text" id="pokemonInput">
+  <button id="findBtn">Find</button>
+
+  <img id="defaultImage" src="pokeball.png" alt="Pokeball">
+  <img id="pokemonImage" alt="Pokemon">
+
+  <audio id="pokemonAudio" controls></audio>
+
+  <br><br>
+
+  <select id="move1"></select>
+  <select id="move2"></select>
+  <br>
+  <select id="move3"></select>
+  <select id="move4"></select>
+
+  <br>
+
+  <button id="addBtn">Add to Team</button>
+
+  <div id="team"></div>
+
+</div>
+
+<!-- Link to JavaScript file -->
+<script src="PokemonJs.js"></script>
+
+</body>
+</html>
